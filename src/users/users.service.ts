@@ -8,14 +8,19 @@ export class UsersService {
   private users: User[] = [];
 
   create(createUserDto: CreateUserDto): User {
-    const newUser = new User({
-      id: uuidv4(),
-      name: createUserDto.name,
-      email: createUserDto.email,
-    });
-    
-    this.users.push(newUser);
-    return newUser;
+      // Usar importación dinámica para uuid
+      const uuidPromise = import('uuid').then(mod => mod.v4());
+      const newUser = new User({
+        id: undefined,
+        name: createUserDto.name,
+        email: createUserDto.email,
+      });
+      // Asignar el id de forma asíncrona
+      uuidPromise.then(id => {
+        newUser.id = id;
+        this.users.push(newUser);
+      });
+      return newUser;
   }
 
   findAll(): User[] {
