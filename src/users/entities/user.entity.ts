@@ -1,12 +1,15 @@
 
 import { ApiProperty } from "@nestjs/swagger";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
+@Entity()
 export class User {
     @ApiProperty({
         description: 'ID único del usuario',
         example: '123e4567-e89b-12d3-a456-426614174000',
         format: 'uuid'
     })
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @ApiProperty({
@@ -15,6 +18,7 @@ export class User {
         minLength: 1,
         maxLength: 100
     })
+    @Column({ length: 100 })
     name: string;
 
     @ApiProperty({
@@ -22,6 +26,7 @@ export class User {
         example: 'juan.perez@example.com',
         format: 'email'
     })
+    @Column({ unique: true })
     email: string;
 
     @ApiProperty({
@@ -30,6 +35,7 @@ export class User {
         type: 'string',
         format: 'date-time'
     })
+    @CreateDateColumn()
     createdAt: Date;
 
     @ApiProperty({
@@ -38,11 +44,10 @@ export class User {
         type: 'string',
         format: 'date-time'
     })
+    @UpdateDateColumn()
     updatedAt: Date;
 
     constructor(partial: Partial<User>) {
         Object.assign(this, partial);
-        this.createdAt = this.createdAt || new Date();
-        this.updatedAt = new Date();
     }
 }
